@@ -55,7 +55,8 @@ static INDEX_HTML: &str = r#"
     <title>PoC</title>
   </head>
   <body>
-    <h1>test</h1>
+    <h1>PoC</h1>
+    <div id="ws-status">Disconnected</div>
     <script type="text/javascript">
     var uri = 'ws://' + location.host + '/ws';
     var ws = new WebSocket(uri);
@@ -65,7 +66,7 @@ static INDEX_HTML: &str = r#"
       document.body.appendChild(line);
     }
     ws.onopen = function() {
-      document.body.innerHTML = "<p><em>Connected!</em></p>";
+      document.querySelector('#ws-status').innerText = "Connected";
     }
     ws.onmessage = function(msg) {
       message(msg.data);
