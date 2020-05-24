@@ -1,5 +1,5 @@
 [package]
-name = "gearbox"
+name = "backgeard"
 version = "0.1.0"
 authors = ["Yuta Taniguchi <yuta.taniguchi.y.t@gmail.com>"]
 edition = "2018"
