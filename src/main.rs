@@ -68,7 +68,7 @@ async fn user_connected(
             debug!("locked");
             let n = stdout.read(&mut buf[..]).await.unwrap();
             debug!("Read {} bytes", n);
-            let msg = Message::text(std::str::from_utf8(&buf[..]).unwrap());
+            let msg = Message::text(std::str::from_utf8(&buf[..n]).unwrap());
             if let Err(_disconnected) = tx.send(Ok(msg)) {
                 // The tx is disconnected, our `user_disconnected` code
                 // should be happening in another task, nothing more to
@@ -85,7 +85,7 @@ async fn user_connected(
             debug!("locked");
             let n = stderr.read(&mut buf[..]).await.unwrap();
             debug!("Read {} bytes", n);
-            let msg = Message::text(std::str::from_utf8(&buf[..]).unwrap());
+            let msg = Message::text(std::str::from_utf8(&buf[..n]).unwrap());
             if let Err(_disconnected) = tx2.send(Ok(msg)) {
                 // The tx2 is disconnected, our `user_disconnected` code
                 // should be happening in another task, nothing more to
