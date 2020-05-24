@@ -120,29 +120,35 @@ static INDEX_HTML: &str = r#"
   <head>
     <meta charset="utf-8">
     <title>PoC</title>
+    <style>
+      #terminal {
+        background-color: black;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <h1>PoC</h1>
     <div id="ws-status">Disconnected</div>
     <input id="stdin" type="text" placeholder="stdin" autofocus>
+    <pre id="terminal"><code id="terminal-text"></code></pre>
     <script type="text/javascript">
     var uri = 'ws://' + location.host + '/ws';
     var ws = new WebSocket(uri);
-    function message(data) {
-      var line = document.createElement('p');
-      line.innerText = data;
-      document.body.appendChild(line);
+    function print(data) {
+      document.querySelector('#terminal-text').innerText += data;
     }
     ws.onopen = function() {
       document.querySelector('#ws-status').innerText = "Connected";
     }
     ws.onmessage = function(msg) {
-      message(msg.data);
+      print(msg.data);
     };
     document.querySelector('#stdin').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         var msg = e.target.value;
         ws.send(msg);
+        print(msg + '\n');
         e.target.value = '';
       }
     });
