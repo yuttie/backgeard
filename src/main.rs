@@ -59,6 +59,7 @@ async fn user_connected(
         }
     }));
 
+    let tx2 = tx.clone();
     tokio::task::spawn(async move {
         let mut buf: [u8; 10] = [0; 10];
         loop {
@@ -70,6 +71,23 @@ async fn user_connected(
             let msg = Message::text(std::str::from_utf8(&buf[..]).unwrap());
             if let Err(_disconnected) = tx.send(Ok(msg)) {
                 // The tx is disconnected, our `user_disconnected` code
+                // should be happening in another task, nothing more to
+                // do here.
+            }
+        }
+    });
+
+    tokio::task::spawn(async move {
+        let mut buf: [u8; 10] = [0; 10];
+        loop {
+            debug!("loop");
+            let mut stderr = stderr.lock().await;
+            debug!("locked");
+            let n = stderr.read(&mut buf[..]).await.unwrap();
+            debug!("Read {} bytes", n);
+            let msg = Message::text(std::str::from_utf8(&buf[..]).unwrap());
+            if let Err(_disconnected) = tx2.send(Ok(msg)) {
+                // The tx2 is disconnected, our `user_disconnected` code
                 // should be happening in another task, nothing more to
                 // do here.
             }
